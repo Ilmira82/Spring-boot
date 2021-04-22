@@ -35,19 +35,14 @@
                     <input type="text" name="lastName" th:id="lastName" th:value="${user.getLastName()}">
                 </label>
                 <br>
-                <label>
+                <label>Roles:
                     <input type="checkbox"
-                           name="roleAdmin"
-                           th:checked="${roleAdmin}"
-                           th:value="ROLE_ADMIN"
-                           th:text="Admin">
-                </label>
-                <label>
-                    <input type="checkbox"
-                           name="roleUser"
-                           th:checked="${roleUser}"
-                           th:value="ROLE_User"
-                           th:text="User">
+                           th:each="role : ${userRoles}"
+                           th:value="${role.id}"
+                           th:text="${role.name}"
+                           name="roleIds"
+                           th:checked="${#sets.contains(user.roles, role)}"
+                    />
                 </label>
             </p>
         </fieldset> <br>

@@ -34,5 +34,10 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findAll();
     }
 
+    @Override
+    public List<Role> findAllRoles() {
+        return roleDao.findAll();
+    }
+
 
 }

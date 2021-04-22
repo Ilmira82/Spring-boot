@@ -11,6 +11,7 @@ import com.ilmira.springboot.service.RoleService;
 import com.ilmira.springboot.service.UserService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -38,60 +39,37 @@ public class AdminController {
     }
 
     @GetMapping(value = "admin/add")
-    public String addUser(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
+    public String addUser(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("allRoles", roleService.findAllRoles());
         return "add";
     }
 
     @PostMapping(value = "admin/add")
     public String postAddUser(@ModelAttribute("user") User user,
-                              @RequestParam(required=false) String roleAdmin,
-                              @RequestParam(required=false) String roleUser) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.getRoleByName("ROLE_USER"));
-        if (roleAdmin != null && roleAdmin.equals("ROLE_ADMIN")) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        }
-        if (roleUser != null && roleUser.equals("ROLE_USER")) {
-            roles.add(roleService.getRoleByName("ROLE_USER"));
-        }
-        user.setRoles(roles);
+                              @ModelAttribute("allRoles") Role roles) {
+
+        roleService.findAllRoles();
         userService.addUser(user);
 
         return "redirect:/admin";
     }
 
-
     @GetMapping(value = "admin/edit/{id}")
     public String editUser(ModelMap model, @PathVariable("id") Long id) {
         User user = userService.getUserById(id);
-        Set<Role> roles = user.getRoles();
-        for (Role role: roles) {
-            if (role.equals(roleService.getRoleByName("ROLE_ADMIN"))) {
-                model.addAttribute("roleAdmin", true);
-            }
-            if (role.equals(roleService.getRoleByName("ROLE_USER"))) {
-                model.addAttribute("roleUser", true);
-            }
-        }
+        List<Role> roles = roleService.findAllRoles();
         model.addAttribute("user", user);
+        model.addAttribute("userRoles", roles);
         return "edit";
     }
+
     @PostMapping(value = "admin/edit")
-    public String postEditUser(@ModelAttribute("user") User user,
-                               @RequestParam(required=false) String roleAdmin)
-                              // @RequestParam(required=false) String roleUser)
-                               {
-
-        Set<Role> roles = new HashSet<>();
-        if (roleAdmin != null && roleAdmin .equals("ROLE_ADMIN")) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        } else {
-
-            roles.add(roleService.getRoleByName("ROLE_USER"));
+    public String postEditUser(@ModelAttribute("user") User user, @RequestParam("roleIds") Long[] roleIds) {
+        user.getRoles().clear();
+        for (Long roleId : roleIds) {
+            Role role = roleService.getRoleById(roleId);
+            user.getRoles().add(role);
         }
-        user.setRoles(roles);
         userService.editUser(user);
         return "redirect:/admin";
     }

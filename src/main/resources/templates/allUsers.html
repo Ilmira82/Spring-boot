@@ -34,11 +34,7 @@
             <td th:text="${user.getFirstName()}">FirstName</td>
             <td th:text="${user.getLastName()}">Last</td>
             <td>
-                <div th:each="role: ${user.getRoles()}">
-                    <span th:if="(${role.getName()} == 'ROLE_ADMIN')" th:utext="Admin"></span>
-                    <span th:if="(${role.getName()} == 'ROLE_USER')" th:utext="User"></span>
-
-                </div>
+                <p th:each="role : ${user.getRoles()}" th:text="${role.name}"></p>
             </td>
             <td>
                 <form th:action="@{edit/{id}(id=${user.getId()})}" th:object="${user}">

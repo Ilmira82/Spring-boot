@@ -43,23 +43,13 @@
                            th:id="firstName">
                 </label>
                 <br>
-                <label th:for="lastName">LastName:<br>
-                    <input type="text"
-                           name="lastName"
-                           th:id="lastName">
-                </label>
-                <br>
-                <label>
-                    <input type="checkbox"
-                           name="roleAdmin"
-                           th:value="ROLE_ADMIN"
-                           th:text="Admin">
-                </label>
-                <label>
-                    <input type="checkbox"
-                           name="roleUser"
-                           th:value="ROLE_USER"
-                           th:text="User">
+                <label>Roles:
+                    <input type="checkbox" name="roles"
+                           th:each="role : ${allRoles}"
+                           th:text="${role.name}"
+                           th:value="${role.id}"
+                           th:field="*{roles}"
+                    />
                 </label>
             </p>
         </fieldset>
